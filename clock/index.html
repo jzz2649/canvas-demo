@@ -8,8 +8,44 @@
 </head>
 <body>
     <canvas id="canvas" width="300" height="300"></canvas>
-
     <script>
+        
+        function scale(ctx,n,start,end){
+            ctx.beginPath();
+            ctx.rotate(Math.PI/n);
+            ctx.moveTo(start,0);
+            ctx.lineTo(end,0);
+            ctx.stroke();
+        }
+
+        function scales(ctx,w,n,start,end){
+            ctx.lineWidth = w;
+            ctx.save();
+            for(var i = 0; i < n; i++){
+                scale(ctx,n/2,start,end)
+            }
+            ctx.restore();
+        }
+
+        function line(ctx,rotate,w,start,end,color,t){
+            ctx.save();
+            ctx.rotate(rotate);
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = w;
+            ctx.beginPath();
+            ctx.moveTo(start,0);
+            ctx.lineTo(end,0);
+            ctx.stroke();
+            !t&&ctx.restore();
+        }
+
+        function arc(ctx,begin,type,callback){
+            begin&&ctx.beginPath();
+            callback();
+            ctx[type]();
+        }
+
         function clock() {
         var now = new Date();
         var ctx = document.getElementById('canvas').getContext('2d');
@@ -20,88 +56,36 @@
         ctx.rotate(-Math.PI/2);
         ctx.strokeStyle = 'black';
         ctx.fillStyle = 'white';
-        ctx.lineWidth = 8;
         ctx.lineCap = 'round';
-
-        ctx.save();
-        for(var i = 0; i < 12; i++) {
-            ctx.beginPath();
-            ctx.rotate(Math.PI/6);
-            ctx.moveTo(100,0);
-            ctx.lineTo(120,0);
-            ctx.stroke();
-        }
-        ctx.restore();
-
-        ctx.save();
-        ctx.lineWidth = 5;
-        for(var i = 0; i < 60; i++) {
-            if(i % 5 != 0 ) {
-                ctx.beginPath();
-                ctx.moveTo(117,0);
-                ctx.lineTo(120,0);
-                ctx.stroke();
-            }
-            ctx.rotate(Math.PI/30);
-        }
-        ctx.restore();
-
+        scales(ctx,8,12,100,120);
+        scales(ctx,5,60,117,120);
         var sec = now.getSeconds();
         var min = now.getMinutes();
         var hr = now.getHours;
         hr = hr >= 12 ? hr-12: hr;
-
-        ctx.fillStyle = "black";
-
-        ctx.save();
-        ctx.rotate(hr*(Math.PI/6) + (Math.PI/360)*min + (Math.PI/21600)*sec)
-        ctx.lineWidth = 14;
-        ctx.beginPath();
-        ctx.moveTo(-20,0);
-        ctx.lineTo(80,0);
-        ctx.stroke();
-        ctx.restore();
-
-        ctx.save();
-        ctx.rotate( (Math.PI/30)*min + (Math.PI/1800)*sec )
-        ctx.lineWidth = 10;
-        ctx.beginPath();
-        ctx.moveTo(-28,0);
-        ctx.lineTo(112,0);
-        ctx.stroke();
-        ctx.restore();
-
-        ctx.save();
-        ctx.rotate(sec * Math.PI/30);
-        ctx.strokeStyle = "#D40000";
-        ctx.fillStyle = "#D40000";
-        ctx.lineWidth = 6;
-        ctx.beginPath();
-        ctx.moveTo(-30,0);
-        ctx.lineTo(83,0);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(0,0,10,0,Math.PI*2,true);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(95,0,10,0,Math.PI*2,true);
-        ctx.stroke();
+        line(ctx,hr*(Math.PI/6) + (Math.PI/360)*min + (Math.PI/21600)*sec,14,-20,80,"black")
+        line(ctx,(Math.PI/30)*min + (Math.PI/1800)*sec,10,-28,112,"black")
+        line(ctx,sec * Math.PI/30,6,-30,83,"#D40000",true)
+        arc(ctx,true,'fill',function(){
+            ctx.arc(0,0,10,0,Math.PI*2,true);
+        })
+        arc(ctx,true,'stroke',function(){
+            ctx.arc(95,0,10,0,Math.PI*2,true);
+        })
         ctx.fillStyle = "rgba(0,0,0,0)";
-        ctx.arc(0,0,3,0,Math.PI*2,true);
-        ctx.fill();
+        arc(ctx,false,'fill',function(){
+            ctx.arc(0,0,3,0,Math.PI*2,true);
+        })
         ctx.restore();
-
         ctx.beginPath();
         ctx.lineWidth = 14;
         ctx.strokeStyle = '#325FA2';
-        ctx.arc(0,0,142,0,Math.PI*2,true);
-        ctx.stroke();
-
+        arc(ctx,false,'stroke',function(){
+            ctx.arc(0,0,142,0,Math.PI*2,true);
+        })
         ctx.restore();
-
         window.requestAnimationFrame(clock);
         }
-
         window.requestAnimationFrame(clock);
     </script>
 </body>
