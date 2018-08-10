@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <script>
+        var speed = 0.1;
+        function loading() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        var length = canvas.width / 100;
+        ctx.save();
+        ctx.clearRect(0,0,500,500);
+        
+        ctx.save();
+        /* 绘制外圈 */
+        ctx.beginPath();
+        ctx.lineWidth = 14;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = "#ddd";
+        ctx.moveTo(7, canvas.height / 2 - 7);
+        ctx.lineTo(canvas.width - 7, canvas.height / 2 - 7);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+
+        ctx.save();
+        /* 绘制内圈 */
+        ctx.beginPath();
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = "#fff";
+        ctx.moveTo(7, canvas.height / 2 - 7);
+        ctx.lineTo(canvas.width - 7, canvas.height / 2 - 7);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+
+        ctx.save();
+        /* 绘制内圈 */
+        ctx.beginPath();
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = "#4499ff";
+        ctx.moveTo(7, canvas.height / 2 - 7);
+        ctx.lineTo( speed * length - 7, canvas.height / 2 - 7);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+        
+        if(speed > 100) {
+            speed = 0;
+        }
+        speed += 0.1;
+        window.requestAnimationFrame(loading);
+        }
+        window.requestAnimationFrame(loading);
+        
+    </script>
+</body>
+</html>

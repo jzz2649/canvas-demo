@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        let cvs = document.getElementById('canvas');
+        let ctx = cvs.getContext("2d");
+        let max = 6000;
+        resize = () => {
+            cvs.width = window.innerWidth || document.documentElement.clientWidth;
+            cvs.height = window.innerHeight || document.documentElement.clientHeight;
+        }
+        resize();
+        window.onresize = resize;
+        let dots = [], mouse = {x: null, y: null};
+        for(let i = 0; i < 200; i++) {
+            x = Math.random() * cvs.width;
+            y = Math.random() * cvs.height;
+            xa = Math.random() * 2 - 1;
+            ya = Math.random() * 2 - 1; 
+            dots.push({
+                x: x,
+                y: y,
+                xa: xa,
+                ya: ya
+            })
+        }
+        window.onmousemove = (e) => {
+            mouse.x = e.clientX; 
+            mouse.y = e.clientY; 
+        }
+        window.onmouseout = (e) => {
+            mouse.x = null;
+            mouse.y = null;
+        }
+
+        animate = () => {
+            ctx.clearRect(0,0,cvs.width,cvs.height);
+            ndots = [mouse].concat(dots);
+            dots.forEach((dot) => {
+                ctx.fillStyle = '#f00';
+                dot.x += dot.xa;
+                dot.y += dot.ya;
+                dot.xa *= (dot.x > cvs.width || dot.x < 0) ? -1 : 1;
+                dot.ya *= (dot.y > cvs.height || dot.y < 0) ? -1 : 1;
+                ctx.fillRect(dot.x - 0.5, dot.y - 0.5, 1, 1);
+
+                ndots.forEach( (ndot) => {
+                    if(dot === ndot || ndot.x === null || ndot.y === null) return;
+                    let disX = ndot.x - dot.x;
+                    let disY = ndot.y - dot.y;
+                    let dis = disX * disX + disY * disY;
+                    let ratio = 1 - dis / max;
+                    if(dis < max) {
+                        if(ndot === mouse && dis > (max / 2)) {
+                            dot.x += disX * 0.03;
+                            dot.y += disY * 0.03;
+                        }
+                        ctx.beginPath();
+                        ctx.moveTo(dot.x, dot.y);
+                        ctx.strokeStyle = 'rgba(255,0,0,'+ ratio +')';
+                        ctx.lineTo(ndot.x, ndot.y);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                })
+                ndots.splice(ndots.indexOf(dot), 1);
+            })
+
+            window.requestAnimationFrame(animate);
+        }
+        setTimeout(function() {
+            window.requestAnimationFrame(animate);
+        }, 100);
+        
+    </script>
+</body>
+</html>

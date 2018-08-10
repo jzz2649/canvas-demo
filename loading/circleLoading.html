@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <script>
+        var speed = 0.1;
+        function loading() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.save();
+        ctx.clearRect(0,0,500,500);
+        var centerX = canvas.width / 2;
+        var centerY = canvas.height / 2;
+        var newRadius = -Math.PI / 2 + speed*(Math.PI * 2 / 100);
+        
+        ctx.save();
+        /* 绘制外圈 */
+        ctx.beginPath();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#4499ff";
+        ctx.arc(centerX, centerY, 100, 0, Math.PI*2, false );
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+        
+        ctx.save();
+        /* 绘制文字 */
+        ctx.beginPath();
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.font = "40px sans-serif";
+        ctx.strokeStyle = '#4499ff';
+        ctx.strokeText(speed.toFixed(0) + '%',centerX - 40, centerY + 10);
+        ctx.stroke();
+
+        ctx.restore();
+
+        ctx.save();
+        /* 绘制运动外圈 */
+        ctx.beginPath();
+        ctx.strokeStyle = "#fee"; 
+        ctx.lineWidth = 5;
+        ctx.arc(centerX, centerY, 100, -Math.PI / 2, newRadius, false);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+        
+        if(speed > 100) {
+            speed = 0;
+        }
+        speed += 0.1;
+        window.requestAnimationFrame(loading);
+        }
+        window.requestAnimationFrame(loading);
+        
+    </script>
+</body>
+</html>
